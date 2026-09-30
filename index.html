@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Ìmọ̀ — Offline Knowledge Hub</title>
+    <title>Project Ìmọ̀ — Zero Data Node</title>
     <style>
         :root {
             --bg-color: #0f172a;
@@ -14,35 +15,42 @@
             --text-muted: #94a3b8;
             --gold: #f59e0b;
             --chat-bg: #0f172a;
+            --border: #334155;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         body { background-color: var(--bg-color); color: var(--text-main); padding: 16px; min-height: 100vh; }
-        
-        header { text-align: center; padding: 16px 0; border-bottom: 1px solid #334155; margin-bottom: 20px; }
+       
+        header { text-align: center; padding: 12px 0 20px; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
         .badge { background: var(--gold); color: #000; font-size: 0.7rem; font-weight: bold; padding: 3px 8px; border-radius: 12px; text-transform: uppercase; }
-        h1 { font-size: 1.5rem; margin-top: 6px; }
+        h1 { font-size: 1.6rem; margin-top: 6px; }
         p.subtitle { color: var(--text-muted); font-size: 0.85rem; margin-top: 2px; }
 
         .container { max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
-        
-        .card { background: var(--card-bg); border-radius: 12px; padding: 16px; border: 1px solid #334155; }
-        .card h2 { font-size: 1.1rem; color: var(--accent); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-        
-        /* Ọ̀yẹ́ Chat Box UI */
-        .chat-box { background: var(--chat-bg); border-radius: 8px; border: 1px solid #334155; padding: 12px; height: 260px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; }
+       
+        .card { background: var(--card-bg); border-radius: 12px; padding: 16px; border: 1px solid var(--border); }
+        .card h2 { font-size: 1.1rem; color: var(--accent); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+       
+        /* Ọ̀yẹ́ Chat Box */
+        .chat-box { background: var(--chat-bg); border-radius: 8px; border: 1px solid var(--border); padding: 12px; height: 260px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; }
         .msg { padding: 10px 12px; border-radius: 8px; font-size: 0.88rem; line-height: 1.4; max-width: 85%; }
         .msg.bot { background: #1e293b; color: #f8fafc; align-self: flex-start; border-left: 3px solid var(--accent); }
         .msg.user { background: var(--accent); color: white; align-self: flex-end; }
-        
+       
         .input-group { display: flex; gap: 8px; }
-        input[type="text"] { flex: 1; background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 10px; color: var(--text-main); font-size: 0.9rem; }
+        input[type="text"] { flex: 1; background: #0f172a; border: 1px solid var(--border); border-radius: 8px; padding: 10px; color: var(--text-main); font-size: 0.9rem; }
         input[type="text"]:focus { outline: none; border-color: var(--accent); }
-        
+       
         .btn { background: var(--accent); color: white; border: none; padding: 10px 16px; border-radius: 8px; font-weight: bold; font-size: 0.9rem; cursor: pointer; }
         .btn:active { background: var(--accent-hover); }
 
-        footer { text-align: center; margin-top: 24px; color: var(--text-muted); font-size: 0.75rem; border-top: 1px solid #334155; padding-top: 12px; }
+        /* Offline STEM Reference Cards */
+        .grid-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .ref-item { background: #0f172a; border: 1px solid var(--border); border-radius: 8px; padding: 10px; font-size: 0.8rem; }
+        .ref-item h3 { color: var(--gold); font-size: 0.85rem; margin-bottom: 4px; }
+        .ref-item code { color: #38bdf8; font-family: monospace; }
+
+        footer { text-align: center; margin-top: 24px; color: var(--text-muted); font-size: 0.75rem; border-top: 1px solid var(--border); padding-top: 12px; }
     </style>
 </head>
 <body>
@@ -50,43 +58,70 @@
     <header>
         <span class="badge">Offline Intranet Node</span>
         <h1>Project Ìmọ̀</h1>
-        <p class="subtitle">Fostering Ọ̀yẹ́ (Comprehension) through Socratic Learning</p>
+        <p class="subtitle">Socratic Tutor & STEM Resource Portal</p>
     </header>
 
     <div class="container">
-        <!-- Interactive Ọ̀yẹ́ Chat Window -->
+        <!-- Part A: Interactive Ọ̀yẹ́ Chat Window connected to Python API -->
         <div class="card">
             <h2>🧠 Ọ̀yẹ́ Socratic Tutor</h2>
             <div class="chat-box" id="chatBox">
                 <div class="msg bot">
-                    <strong>Ọ̀yẹ́:</strong> Ẹ ǹalẹ́! I am Ọ̀yẹ́, your offline study assistant. What STEM topic or WAEC question are you working on today?
+                    <strong>Ọ̀yẹ́:</strong> Ẹ ǹlẹ́ o! I am Ọ̀yẹ́. Ask me a question about Ohm's law, photosynthesis, velocity, or pythagoras!
                 </div>
             </div>
             <div class="input-group">
-                <input type="text" id="userInput" placeholder="Ask a question (e.g., How does Ohm's Law work?)" onkeypress="if(event.key==='Enter') sendMessage()">
+                <input type="text" id="userInput" placeholder="Ask a question..." onkeypress="if(event.key==='Enter') sendMessage()">
                 <button class="btn" onclick="sendMessage()">Send</button>
             </div>
         </div>
 
+        <!-- Part B: Offline STEM Quick Reference Cards -->
+        <div class="card">
+            <h2>📚 WAEC STEM Reference Cards</h2>
+            <div class="grid-cards">
+                <div class="ref-item">
+                    <h3>⚡ Physics: Ohm's Law</h3>
+                    <p><code>V = I × R</code></p>
+                    <p>V = Voltage (V)<br>I = Current (A)<br>R = Resistance (Ω)</p>
+                </div>
+                <div class="ref-item">
+                    <h3>📐 Math: Pythagoras</h3>
+                    <p><code>a² + b² = c²</code></p>
+                    <p>Applies to right-angled triangles. c = hypotenuse.</p>
+                </div>
+                <div class="ref-item">
+                    <h3>🌱 Biology: Photosynthesis</h3>
+                    <p><code>6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂</code></p>
+                    <p>Requires sunlight & chlorophyll.</p>
+                </div>
+                <div class="ref-item">
+                    <h3>🚗 Physics: Velocity</h3>
+                    <p><code>v = d / t</code></p>
+                    <p>v = Velocity (m/s)<br>d = Displacement<br>t = Time</p>
+                </div>
+            </div>
+        </div>
+
         <!-- System Node Info -->
-        <div class="card" style="font-size: 0.85rem; color: var(--text-muted);">
-            ⚡ <strong>Node Status:</strong> Connected to Local Mesh • <strong>Data Cost:</strong> ₦0
+        <div class="card" style="font-size: 0.85rem; color: var(--text-muted); text-align: center;">
+            ⚡ <strong>Node Status:</strong> Connected to Local Python Server • <strong>Data Cost:</strong> ₦0
         </div>
     </div>
 
     <footer>
-        <p>Project Ìmọ̀ Node v1.0 • Powered by Off-Grid Solar</p>
+        <p>Project Ìmọ̀ Node v1.0 • Built for Off-Grid Solar Deployment</p>
     </footer>
 
     <script>
-        function sendMessage() {
+        async function sendMessage() {
             const input = document.getElementById('userInput');
             const chatBox = document.getElementById('chatBox');
             const text = input.value.trim();
 
             if (!text) return;
 
-            // Display User Message
+            // Render User Message
             const userMsg = document.createElement('div');
             userMsg.className = 'msg user';
             userMsg.textContent = text;
@@ -95,16 +130,32 @@
             input.value = '';
             chatBox.scrollTop = chatBox.scrollHeight;
 
-            // Simulated Socratic Offline Response (Next phase: connect to Python backend)
-            setTimeout(() => {
+            // Fetch response live from oye_engine.py server
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: text })
+                });
+
+                const data = await response.json();
+
                 const botMsg = document.createElement('div');
                 botMsg.className = 'msg bot';
-                botMsg.innerHTML = '<strong>Ọ̀yẹ́:</strong> That\'s a great question! Before I explain, what do you think happens to current when resistance increases?';
+                botMsg.innerHTML = '<strong>Ọ̀yẹ́:</strong> ' + data.reply;
                 chatBox.appendChild(botMsg);
-                chatBox.scrollTop = chatBox.scrollHeight;
-            }, 800);
+            } catch (err) {
+                const botMsg = document.createElement('div');
+                botMsg.className = 'msg bot';
+                botMsg.innerHTML = '<strong>Ọ̀yẹ́:</strong> [Error] Could not connect to Python backend. Make sure oye_engine.py is running in Termux!';
+                chatBox.appendChild(botMsg);
+            }
+
+            chatBox.scrollTop = chatBox.scrollHeight;
         }
     </script>
 
 </body>
 </html>
+
+            
