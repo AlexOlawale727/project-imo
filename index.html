@@ -2,160 +2,1075 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Ìmọ̀ — Zero Data Node</title>
-    <style>
-        :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --accent: #0284c7;
-            --accent-hover: #0369a1;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --gold: #f59e0b;
-            --chat-bg: #0f172a;
-            --border: #334155;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Project Ìmọ̀ — Offline Learning Node</title>
+  <style>
+    /* ==========================================================================
+       1. DUAL-PALETTE ADAPTIVE THEME SYSTEM (HARDWARE ACCELERATED & LOW-RAM OPTIMIZED)
+       ========================================================================== */
+    :root {
+      /* Dark Mode Palette */
+      --bg-main: #0B0F19;         /* Deep Midnight Blue */
+      --bg-surface: #1E293B;      /* Slate Gray */
+      --bg-inset: #0F172A;        /* Darker Slate Inset */
+      --text-main: #F8FAFC;       /* Off-White / Slate 50 */
+      --text-muted: #94A3B8;      /* Slate 400 */
+     
+      /* Cognitive Hierarchy Accents */
+      --accent-blue: #38BDF8;     /* Interactive Sky Blue */
+      --accent-gold: #E0A96D;     /* Oyo Gold Accent */
+      --accent-gold-hover: #D09353;
+      --state-success: #34D399;   /* Mint Green */
+      --state-error: #F87171;     /* Soft Coral Red */
+     
+      --border-color: #334155;    /* Slate 700 */
+      --bot-msg-bg: #1E293B;
+      --user-msg-bg: #0284C7;
+      --card-bg: #1E293B;
+      --status-bg: #0B0F19;
+      --shadow-color: rgba(0, 0, 0, 0.4);
+     
+      /* System Zero-Dependency Font Stack */
+      --font-nav: -apple-system, BlinkMacSystemFont, "Plus Jakarta Sans", "Inter", "Segoe UI", sans-serif;
+      --font-heading: -apple-system, BlinkMacSystemFont, "Cabinet Grotesk", "Inter", "Segoe UI", sans-serif;
+      --font-body: -apple-system, BlinkMacSystemFont, "Source Sans 3", "Inter", "Segoe UI", sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+    }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-main); padding: 16px; min-height: 100vh; }
-       
-        header { text-align: center; padding: 12px 0 20px; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
-        .badge { background: var(--gold); color: #000; font-size: 0.7rem; font-weight: bold; padding: 3px 8px; border-radius: 12px; text-transform: uppercase; }
-        h1 { font-size: 1.6rem; margin-top: 6px; }
-        p.subtitle { color: var(--text-muted); font-size: 0.85rem; margin-top: 2px; }
+    body.light-mode {
+      /* High-Contrast Outdoor Daylight / Solar Mode */
+      --bg-main: #FFFFFF;
+      --bg-surface: #F1F5F9;
+      --bg-inset: #E2E8F0;
+      --text-main: #020617;
+      --text-muted: #334155;
+      --accent-blue: #0284C7;
+      --accent-gold: #B45309;
+      --accent-gold-hover: #92400E;
+      --border-color: #94A3B8;
+      --bot-msg-bg: #F1F5F9;
+      --user-msg-bg: #0284C7;
+      --card-bg: #FFFFFF;
+      --status-bg: #CBD5E1;
+      --shadow-color: rgba(0, 0, 0, 0.15);
+    }
 
-        .container { max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
-       
-        .card { background: var(--card-bg); border-radius: 12px; padding: 16px; border: 1px solid var(--border); }
-        .card h2 { font-size: 1.1rem; color: var(--accent); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-       
-        /* Ọ̀yẹ́ Chat Box */
-        .chat-box { background: var(--chat-bg); border-radius: 8px; border: 1px solid var(--border); padding: 12px; height: 260px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; }
-        .msg { padding: 10px 12px; border-radius: 8px; font-size: 0.88rem; line-height: 1.4; max-width: 85%; }
-        .msg.bot { background: #1e293b; color: #f8fafc; align-self: flex-start; border-left: 3px solid var(--accent); }
-        .msg.user { background: var(--accent); color: white; align-self: flex-end; }
-       
-        .input-group { display: flex; gap: 8px; }
-        input[type="text"] { flex: 1; background: #0f172a; border: 1px solid var(--border); border-radius: 8px; padding: 10px; color: var(--text-main); font-size: 0.9rem; }
-        input[type="text"]:focus { outline: none; border-color: var(--accent); }
-       
-        .btn { background: var(--accent); color: white; border: none; padding: 10px 16px; border-radius: 8px; font-weight: bold; font-size: 0.9rem; cursor: pointer; }
-        .btn:active { background: var(--accent-hover); }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-        /* Offline STEM Reference Cards */
-        .grid-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .ref-item { background: #0f172a; border: 1px solid var(--border); border-radius: 8px; padding: 10px; font-size: 0.8rem; }
-        .ref-item h3 { color: var(--gold); font-size: 0.85rem; margin-bottom: 4px; }
-        .ref-item code { color: #38bdf8; font-family: monospace; }
+    /* FLEXBOX LAYOUT SHIELD: Anchors layout, prevents header/footer sliding on long scroll */
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.6; /* leading-relaxed */
+    }
 
-        footer { text-align: center; margin-top: 24px; color: var(--text-muted); font-size: 0.75rem; border-top: 1px solid var(--border); padding-top: 12px; }
-    </style>
+    body {
+      display: flex;
+      flex-direction: column;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    /* ==========================================================================
+       2. APP HEADER
+       ========================================================================== */
+    .app-header {
+      background-color: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+      flex-shrink: 0;
+      z-index: 10;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .icon-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-main);
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.15s ease;
+    }
+
+    .icon-btn:hover, .icon-btn:active {
+      background-color: var(--bg-inset);
+    }
+
+    .app-title {
+      font-family: var(--font-heading);
+      font-size: 1.25rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: -0.3px;
+    }
+
+    .app-title span {
+      color: var(--accent-gold);
+    }
+
+    /* ==========================================================================
+       3. NAVIGATION DRAWER & PROFILE-NESTED SESSION HUB
+       ========================================================================== */
+    .drawer-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(2px);
+      z-index: 200;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.25s ease, visibility 0.25s ease;
+    }
+
+    .drawer-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Hardware-Accelerated Layering via translate3d */
+    .nav-drawer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 300px;
+      height: 100%;
+      background-color: var(--bg-surface);
+      border-right: 1px solid var(--border-color);
+      z-index: 201;
+      transform: translate3d(-100%, 0, 0);
+      will-change: transform;
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      padding: 16px;
+      box-shadow: 4px 0 20px var(--shadow-color);
+      font-family: var(--font-nav);
+      overflow-y: auto;
+    }
+
+    .drawer-overlay.active .nav-drawer {
+      transform: translate3d(0, 0, 0);
+    }
+
+    /* Profile-Nested Session Hub */
+    .profile-card {
+      background-color: var(--bg-inset);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 16px;
+      cursor: pointer;
+      transition: border-color 0.2s ease;
+    }
+
+    .profile-card:hover {
+      border-color: var(--accent-blue);
+    }
+
+    .profile-header-flex {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .profile-main {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-gold), var(--accent-blue));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: #000;
+      font-size: 0.9rem;
+    }
+
+    .profile-info h4 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .profile-info p {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .session-hub-dropdown {
+      display: none;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--border-color);
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .session-hub-dropdown.open {
+      display: flex;
+    }
+
+    .hub-item {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      text-align: left;
+      font-size: 0.8rem;
+      padding: 6px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .hub-item:hover {
+      background-color: var(--bg-surface);
+      color: var(--text-main);
+    }
+
+    .drawer-section-title {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-muted);
+      margin: 16px 0 8px 4px;
+      font-weight: 700;
+    }
+
+    /* Nested Accordion Navigation for Exam Prep Tracks & Subjects */
+    .drawer-menu {
+      list-style: none;
+    }
+
+    .track-accordion {
+      margin-bottom: 6px;
+    }
+
+    .track-header {
+      width: 100%;
+      text-align: left;
+      padding: 10px 12px;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      color: var(--text-main);
+      font-family: var(--font-nav);
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background-color 0.15s ease;
+    }
+
+    .track-header:hover {
+      background-color: var(--bg-inset);
+    }
+
+    .track-header.active {
+      border-left: 3px solid var(--accent-blue);
+      background-color: var(--bg-inset);
+    }
+
+    .subject-sublist {
+      display: none;
+      list-style: none;
+      padding-left: 18px;
+      margin: 4px 0 8px 0;
+    }
+
+    .subject-sublist.open {
+      display: block;
+    }
+
+    .sub-btn {
+      width: 100%;
+      text-align: left;
+      padding: 6px 10px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: color 0.15s ease;
+    }
+
+    .sub-btn:hover {
+      color: var(--accent-blue);
+      background-color: var(--bg-inset);
+    }
+
+    /* ==========================================================================
+       4. MAIN WORKSPACE (FLEX SHIELD)
+       ========================================================================== */
+    .mobile-tab-bar {
+      display: none;
+      background-color: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+      flex-shrink: 0;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 12px;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-family: var(--font-nav);
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+    }
+
+    .tab-btn.active {
+      color: var(--accent-gold);
+      border-bottom-color: var(--accent-gold);
+    }
+
+    .workspace {
+      flex: 1;
+      display: flex;
+      overflow: hidden; /* Key to flexbox shield */
+      position: relative;
+    }
+
+    .pane {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background-color: var(--bg-main);
+    }
+
+    .pane-left {
+      border-right: 1px solid var(--border-color);
+    }
+
+    .pane-header {
+      padding: 12px 16px;
+      background-color: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+      font-family: var(--font-heading);
+      font-size: 1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .pane-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* ==========================================================================
+       5. LEFT PANE: STUDY MATERIALS & HARDWARE DIAGNOSTICS
+       ========================================================================== */
+    .hardware-panel {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 16px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+    }
+
+    .hardware-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      color: var(--accent-gold);
+      font-weight: bold;
+    }
+
+    .hardware-metrics {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--border-color);
+    }
+
+    .metric-box {
+      background-color: var(--bg-inset);
+      padding: 8px;
+      border-radius: 4px;
+    }
+
+    .metric-val {
+      color: var(--text-main);
+      font-weight: bold;
+      margin-top: 2px;
+    }
+
+    .exam-track-pills {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .pill {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-family: var(--font-nav);
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+
+    .pill.active, .pill:hover {
+      background-color: var(--accent-gold);
+      color: #000;
+      border-color: var(--accent-gold);
+    }
+
+    .stem-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 12px;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+
+    .stem-card:hover {
+      border-color: var(--accent-blue);
+    }
+
+    .card-tag {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background-color: var(--bg-inset);
+      color: var(--accent-blue);
+      margin-bottom: 8px;
+    }
+
+    .card-title {
+      font-family: var(--font-heading);
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .code-block {
+      background-color: var(--bg-inset);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 10px;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: var(--accent-gold);
+      overflow-x: auto;
+      margin-top: 8px;
+    }
+
+    /* ==========================================================================
+       6. RIGHT PANE: Ọ̀YẸ́ SOCRATIC CHAT WORKSPACE
+       ========================================================================== */
+    .chat-history {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .msg {
+      max-width: 85%;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: 1rem;
+      line-height: 1.6;
+      word-wrap: break-word;
+    }
+
+    .msg.bot {
+      align-self: flex-start;
+      background-color: var(--bot-msg-bg);
+      border-left: 3px solid var(--accent-gold);
+      color: var(--text-main);
+      border-top-left-radius: 2px;
+    }
+
+    .msg.user {
+      align-self: flex-end;
+      background-color: var(--user-msg-bg);
+      color: #FFFFFF;
+      border-top-right-radius: 2px;
+    }
+
+    .greeting-muted {
+      color: var(--text-muted); /* #94A3B8 Secondary Text Color */
+    }
+
+    .greeting-prompt {
+      color: var(--text-main);  /* #F8FAFC Primary Text Color */
+      font-weight: 700;
+    }
+
+    .chat-input-area {
+      padding: 12px 16px;
+      background-color: var(--bg-surface);
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .chat-input {
+      flex: 1;
+      background-color: var(--bg-inset);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px;
+      color: var(--text-main);
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+
+    .chat-input::placeholder {
+      color: var(--text-muted);
+      opacity: 0.8;
+    }
+
+    .chat-input:focus {
+      border-color: var(--accent-gold);
+    }
+
+    .send-btn {
+      background-color: var(--accent-gold);
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 18px;
+      font-family: var(--font-nav);
+      font-size: 0.88rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: background-color 0.15s ease;
+    }
+
+    .send-btn:hover {
+      background-color: var(--accent-gold-hover);
+    }
+
+    /* ==========================================================================
+       7. BOTTOM PERSISTENT CAPTIVE PORTAL STATUS FOOTER
+       ========================================================================== */
+    .status-footer {
+      background-color: var(--status-bg);
+      border-top: 1px solid var(--border-color);
+      padding: 8px 16px;
+      font-size: 0.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--state-success);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--state-success);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .zero-data-tag {
+      background-color: var(--accent-gold);
+      color: #000;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.68rem;
+    }
+
+    /* ==========================================================================
+       8. RESPONSIVE DESIGN (MOBILE ADAPTATION)
+       ========================================================================== */
+    @media (max-width: 768px) {
+      .mobile-tab-bar {
+        display: flex;
+      }
+      .workspace {
+        flex-direction: column;
+      }
+      .pane {
+        display: none;
+        width: 100%;
+        height: 100%;
+      }
+      .pane.active-mobile {
+        display: flex;
+      }
+      .pane-left {
+        border-right: none;
+      }
+    }
+  </style>
 </head>
 <body>
 
-    <header>
-        <span class="badge">Offline Intranet Node</span>
-        <h1>Project Ìmọ̀</h1>
-        <p class="subtitle">Socratic Tutor & STEM Resource Portal</p>
-    </header>
-
-    <div class="container">
-        <!-- Part A: Interactive Ọ̀yẹ́ Chat Window connected to Python API -->
-        <div class="card">
-            <h2>🧠 Ọ̀yẹ́ Socratic Tutor</h2>
-            <div class="chat-box" id="chatBox">
-                <div class="msg bot">
-                    <strong>Ọ̀yẹ́:</strong> Ẹ ǹlẹ́ o! I am Ọ̀yẹ́. Ask me a question about Ohm's law, photosynthesis, velocity, or pythagoras!
-                </div>
-            </div>
-            <div class="input-group">
-                <input type="text" id="userInput" placeholder="Ask a question..." onkeypress="if(event.key==='Enter') sendMessage()">
-                <button class="btn" onclick="sendMessage()">Send</button>
-            </div>
-        </div>
-
-        <!-- Part B: Offline STEM Quick Reference Cards -->
-        <div class="card">
-            <h2>📚 WAEC STEM Reference Cards</h2>
-            <div class="grid-cards">
-                <div class="ref-item">
-                    <h3>⚡ Physics: Ohm's Law</h3>
-                    <p><code>V = I × R</code></p>
-                    <p>V = Voltage (V)<br>I = Current (A)<br>R = Resistance (Ω)</p>
-                </div>
-                <div class="ref-item">
-                    <h3>📐 Math: Pythagoras</h3>
-                    <p><code>a² + b² = c²</code></p>
-                    <p>Applies to right-angled triangles. c = hypotenuse.</p>
-                </div>
-                <div class="ref-item">
-                    <h3>🌱 Biology: Photosynthesis</h3>
-                    <p><code>6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂</code></p>
-                    <p>Requires sunlight & chlorophyll.</p>
-                </div>
-                <div class="ref-item">
-                    <h3>🚗 Physics: Velocity</h3>
-                    <p><code>v = d / t</code></p>
-                    <p>v = Velocity (m/s)<br>d = Displacement<br>t = Time</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- System Node Info -->
-        <div class="card" style="font-size: 0.85rem; color: var(--text-muted); text-align: center;">
-            ⚡ <strong>Node Status:</strong> Connected to Local Python Server • <strong>Data Cost:</strong> ₦0
-        </div>
+  <!-- 1. APP HEADER -->
+  <header class="app-header">
+    <div class="header-left">
+      <button class="icon-btn" id="drawer-toggle-btn" aria-label="Open Navigation">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+      </button>
+      <div class="app-title">Project <span>Ìmọ̀</span></div>
     </div>
+   
+    <!-- Theme Toggle Switch (Solar Daylight / Dark Mode) -->
+    <button class="icon-btn" id="theme-toggle-btn" title="Toggle High-Contrast Solar Mode">
+      <svg id="theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      <svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+  </header>
 
-    <footer>
-        <p>Project Ìmọ̀ Node v1.0 • Built for Off-Grid Solar Deployment</p>
-    </footer>
+  <!-- 2. NAVIGATION DRAWER WITH PROFILE-NESTED SESSION HUB & EXAM ACCORDION -->
+  <div class="drawer-overlay" id="drawer-overlay">
+    <nav class="nav-drawer">
+     
+      <!-- Profile-Nested Session Hub -->
+      <div class="profile-card" onclick="toggleSessionHub()">
+        <div class="profile-header-flex">
+          <div class="profile-main">
+            <div class="avatar">01</div>
+            <div class="profile-info">
+              <h4>Scholar Node 01</h4>
+              <p>Oyo State Regional Hub</p>
+            </div>
+          </div>
+          <span id="hub-chevron" style="font-size:0.75rem; color:var(--text-muted);">▼</span>
+        </div>
+       
+        <div class="session-hub-dropdown" id="session-hub">
+          <button class="hub-item"><span>💬 Socratic History Logs</span> <small>14</small></button>
+          <button class="hub-item"><span>📌 Bookmarked Formulas</span> <small>8</small></button>
+          <button class="hub-item"><span>📊 Offline Mastery Score</span> <small>84%</small></button>
+          <button class="hub-item" style="color:var(--accent-blue);">⚙️ Scholar Profile Settings</button>
+        </div>
+      </div>
 
-    <script>
-        async function sendMessage() {
-            const input = document.getElementById('userInput');
-            const chatBox = document.getElementById('chatBox');
-            const text = input.value.trim();
+      <div class="drawer-section-title">Exam Prep Tracks</div>
+      <div class="drawer-menu">
+       
+        <!-- WAEC SSCE Accordion -->
+        <div class="track-accordion">
+          <button class="track-header active" onclick="toggleSubjectTrack('waec-list')">
+            <span>📚 WAEC SSCE</span>
+            <span>▾</span>
+          </button>
+          <ul class="subject-sublist open" id="waec-list">
+            <li><button class="sub-btn">▫ Mathematics</button></li>
+            <li><button class="sub-btn">▫ English Language</button></li>
+            <li><button class="sub-btn">▫ Physics & Chemistry</button></li>
+            <li><button class="sub-btn">▫ Biology & Ag. Science</button></li>
+            <li><button class="sub-btn">▫ Financial Accounting</button></li>
+            <li><button class="sub-btn">▫ Literature-in-English</button></li>
+          </ul>
+        </div>
 
-            if (!text) return;
+        <!-- JAMB UTME Accordion -->
+        <div class="track-accordion">
+          <button class="track-header" onclick="toggleSubjectTrack('jamb-list')">
+            <span>🎯 JAMB UTME Prep</span>
+            <span>▸</span>
+          </button>
+          <ul class="subject-sublist" id="jamb-list">
+            <li><button class="sub-btn">▫ Use of English (Compulsory)</button></li>
+            <li><button class="sub-btn">▫ Physics / Chemistry / Biology</button></li>
+            <li><button class="sub-btn">▫ Economics / Govt / Lit</button></li>
+            <li><button class="sub-btn">▫ Accounts / Commerce</button></li>
+          </ul>
+        </div>
 
-            // Render User Message
-            const userMsg = document.createElement('div');
-            userMsg.className = 'msg user';
-            userMsg.textContent = text;
-            chatBox.appendChild(userMsg);
+        <!-- BECE / JSCE Accordion -->
+        <div class="track-accordion">
+          <button class="track-header" onclick="toggleSubjectTrack('bece-list')">
+            <span>📝 BECE/JSCE Track</span>
+            <span>▸</span>
+          </button>
+          <ul class="subject-sublist" id="bece-list">
+            <li><button class="sub-btn">▫ Basic Science & Tech</button></li>
+            <li><button class="sub-btn">▫ Mathematics & English</button></li>
+            <li><button class="sub-btn">▫ National Value Education</button></li>
+          </ul>
+        </div>
 
-            input.value = '';
-            chatBox.scrollTop = chatBox.scrollHeight;
+        <!-- NECO SSCE Accordion -->
+        <div class="track-accordion">
+          <button class="track-header" onclick="toggleSubjectTrack('neco-list')">
+            <span>🔬 NECO SSCE Track</span>
+            <span>▸</span>
+          </button>
+          <ul class="subject-sublist" id="neco-list">
+            <li><button class="sub-btn">▫ Senior Secondary Sciences</button></li>
+            <li><button class="sub-btn">▫ Commercial & Arts Papers</button></li>
+          </ul>
+        </div>
 
-            // Fetch response live from oye_engine.py server
-            try {
-                const response = await fetch('/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: text })
-                });
+      </div>
 
-                const data = await response.json();
+      <div class="drawer-section-title">Local Storage Center</div>
+      <ul class="drawer-menu">
+        <li><button class="track-header">💾 Downloaded Textbooks</button></li>
+        <li><button class="track-header">📐 STEM & Commercial Tables</button></li>
+      </ul>
+    </nav>
+  </div>
 
-                const botMsg = document.createElement('div');
-                botMsg.className = 'msg bot';
-                botMsg.innerHTML = '<strong>Ọ̀yẹ́:</strong> ' + data.reply;
-                chatBox.appendChild(botMsg);
-            } catch (err) {
-                const botMsg = document.createElement('div');
-                botMsg.className = 'msg bot';
-                botMsg.innerHTML = '<strong>Ọ̀yẹ́:</strong> [Error] Could not connect to Python backend. Make sure oye_engine.py is running in Termux!';
-                chatBox.appendChild(botMsg);
-            }
+  <!-- MOBILE TAB NAVIGATION BAR -->
+  <div class="mobile-tab-bar">
+    <button class="tab-btn active" id="tab-materials-btn" onclick="switchMobileTab('materials')">Study Library</button>
+    <button class="tab-btn" id="tab-tutor-btn" onclick="switchMobileTab('tutor')">Ọ̀yẹ́ Socratic Tutor</button>
+  </div>
 
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
-    </script>
+  <!-- 3. WORKSPACE PANE -->
+  <main class="workspace">
+   
+    <!-- LEFT PANE: STUDY MATERIALS & HARDWARE DIAGNOSTICS -->
+    <section class="pane pane-left active-mobile" id="pane-materials">
+      <div class="pane-header">
+        <span>Curriculum & Diagnostics</span>
+        <span style="font-size: 0.75rem; color: var(--accent-gold);">Offline RAG Ready</span>
+      </div>
+     
+      <div class="pane-content">
+        <!-- Collapsible Solar Hardware Diagnostics -->
+        <div class="hardware-panel">
+          <div class="hardware-header" onclick="toggleHardwarePanel()">
+            <span>⚡ Node Solar Diagnostics</span>
+            <span id="hw-arrow">▲</span>
+          </div>
+          <div class="hardware-metrics" id="hw-metrics-body">
+            <div class="metric-box">
+              <div style="color: var(--text-muted);">Solar Tracker</div>
+              <div class="metric-val">42° Optimal</div>
+            </div>
+            <div class="metric-box">
+              <div style="color: var(--text-muted);">Wiper Pass</div>
+              <div class="metric-val">In 2h 15m</div>
+            </div>
+            <div class="metric-box">
+              <div style="color: var(--text-muted);">Battery Savings</div>
+              <div class="metric-val" style="color: var(--state-success);">+18% Eco</div>
+            </div>
+            <div class="metric-box">
+              <div style="color: var(--text-muted);">Node Power</div>
+              <div class="metric-val">5.1V / 0.4A</div>
+            </div>
+          </div>
+        </div>
 
+        <!-- Subject Category Navigation Pills -->
+        <div class="exam-track-pills">
+          <button class="pill active">All Subjects</button>
+          <button class="pill">Compulsory Core</button>
+          <button class="pill">Sciences</button>
+          <button class="pill">Commercial</button>
+          <button class="pill">Arts & Humanities</button>
+        </div>
+
+        <!-- Curriculum Module Cards -->
+        <div class="stem-card">
+          <span class="card-tag">Physics • Electricity</span>
+          <div class="card-title">Ohm's Law & Circuit Analysis</div>
+          <p style="font-size:0.88rem; color:var(--text-muted);">Relates voltage, current, and resistance in electrical circuits.</p>
+          <div class="code-block">V = I × R | P = V × I</div>
+        </div>
+
+        <div class="stem-card">
+          <span class="card-tag">Economics • Microeconomics</span>
+          <div class="card-title">Law of Demand & Price Elasticity</div>
+          <p style="font-size:0.88rem; color:var(--text-muted);">Examines buyer responsiveness to price fluctuations in local markets.</p>
+          <div class="code-block">% Change in Qd ÷ % Change in Price</div>
+        </div>
+
+        <div class="stem-card">
+          <span class="card-tag">English • Rhetoric</span>
+          <div class="card-title">Socratic Argument Analysis</div>
+          <p style="font-size:0.88rem; color:var(--text-muted);">Identifying premises, logical fallacies, and essay thesis structures.</p>
+        </div>
+
+        <div class="stem-card">
+          <span class="card-tag">Biology • Bioenergetics</span>
+          <div class="card-title">Photosynthesis Equation</div>
+          <p style="font-size:0.88rem; color:var(--text-muted);">Light energy synthesis of glucose in plant chloroplasts.</p>
+          <div class="code-block">6CO₂ + 6H₂O + Light ➔ C₆H₁₂O₆ + 6O₂</div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- RIGHT PANE: Ọ̀YẸ́ SOCRATIC TUTOR WORKSPACE -->
+    <section class="pane pane-right" id="pane-tutor">
+      <div class="pane-header">
+        <span>Ọ̀yẹ́ Socratic Tutor</span>
+        <span style="font-size: 0.75rem; color: var(--text-muted);">AI Node Active</span>
+      </div>
+
+      <!-- Chat History Container -->
+      <div class="chat-history" id="chat-history">
+        <div class="msg bot">
+          <strong>Ọ̀yẹ́:</strong>
+          <span class="greeting-muted">Welcome! Let's explore together. What topic are we unpacking today, and </span>
+          <span class="greeting-prompt">what puzzles you most about it?</span>
+        </div>
+      </div>
+
+      <!-- Chat Input Area -->
+      <form class="chat-input-area" id="chat-form" onsubmit="handleChatSubmit(event)">
+        <input type="text" class="chat-input" id="user-input" placeholder="Ask Ọ̀yẹ́..." autocomplete="off" required />
+        <button type="submit" class="send-btn">Ask</button>
+      </form>
+    </section>
+
+  </main>
+
+  <!-- 4. BOTTOM PERSISTENT CAPTIVE PORTAL STATUS FOOTER -->
+  <footer class="status-footer">
+    <div class="status-badge">
+      <div class="pulse-dot"></div>
+      <span>Node Status: Connected</span>
+    </div>
+    <span class="zero-data-tag">₦0 DATA COST</span>
+    <span>Signal: 100% Local Hotspot</span>
+  </footer>
+
+  <!-- ==========================================================================
+     5. ZERO-DEPENDENCY NATIVE JAVASCRIPT LOGIC
+     ========================================================================== -->
+  <script>
+    // --- 1. OUTDOOR SOLAR DAYLIGHT / DARK MODE SYSTEM ---
+    const themeBtn = document.getElementById('theme-toggle-btn');
+    const iconSun = document.getElementById('theme-icon-sun');
+    const iconMoon = document.getElementById('theme-icon-moon');
+
+    function initTheme() {
+      const savedTheme = localStorage.getItem('imo_theme') || 'dark';
+      if (savedTheme === 'light') {
+        document.body.classList.add('light-mode');
+        iconSun.style.display = 'none';
+        iconMoon.style.display = 'block';
+      } else {
+        document.body.classList.remove('light-mode');
+        iconSun.style.display = 'block';
+        iconMoon.style.display = 'none';
+      }
+    }
+
+    themeBtn.addEventListener('click', () => {
+      document.body.classList.toggle('light-mode');
+      const isLight = document.body.classList.contains('light-mode');
+      localStorage.setItem('imo_theme', isLight ? 'light' : 'dark');
+     
+      iconSun.style.display = isLight ? 'none' : 'block';
+      iconMoon.style.display = isLight ? 'block' : 'none';
+    });
+
+    initTheme();
+
+    // --- 2. DRAWER CONTROL WITH GPU HARDWARE ACCELERATION ---
+    const drawerToggleBtn = document.getElementById('drawer-toggle-btn');
+    const drawerOverlay = document.getElementById('drawer-overlay');
+
+    drawerToggleBtn.addEventListener('click', () => {
+      drawerOverlay.classList.add('active');
+    }, { passive: true });
+
+    drawerOverlay.addEventListener('click', (e) => {
+      if (e.target === drawerOverlay) {
+        drawerOverlay.classList.remove('active');
+      }
+    }, { passive: true });
+
+    // --- 3. PROFILE-NESTED SESSION HUB TOGGLE ---
+    function toggleSessionHub() {
+      const hub = document.getElementById('session-hub');
+      const chevron = document.getElementById('hub-chevron');
+      if (hub.classList.contains('open')) {
+        hub.classList.remove('open');
+        chevron.textContent = '▼';
+      } else {
+        hub.classList.add('open');
+        chevron.textContent = '▲';
+      }
+    }
+
+    // --- 4. EXAM TRACK SUBJECT ACCORDIONS ---
+    function toggleSubjectTrack(trackId) {
+      const targetList = document.getElementById(trackId);
+      const isOpen = targetList.classList.contains('open');
+     
+      // Close all sublists
+      document.querySelectorAll('.subject-sublist').forEach(el => el.classList.remove('open'));
+      document.querySelectorAll('.track-header').forEach(el => el.classList.remove('active'));
+
+      if (!isOpen) {
+        targetList.classList.add('open');
+        targetList.previousElementSibling.classList.add('active');
+      }
+    }
+
+    // --- 5. HARDWARE DIAGNOSTICS PANEL TOGGLE ---
+    function toggleHardwarePanel() {
+      const body = document.getElementById('hw-metrics-body');
+      const arrow = document.getElementById('hw-arrow');
+      if (body.style.display === 'none') {
+        body.style.display = 'grid';
+        arrow.textContent = '▲';
+      } else {
+        body.style.display = 'none';
+        arrow.textContent = '▼';
+      }
+    }
+
+    // --- 6. MOBILE TAB SWITCHER ---
+    function switchMobileTab(tab) {
+      const paneMaterials = document.getElementById('pane-materials');
+      const paneTutor = document.getElementById('pane-tutor');
+      const btnMaterials = document.getElementById('tab-materials-btn');
+      const btnTutor = document.getElementById('tab-tutor-btn');
+
+      if (tab === 'materials') {
+        paneMaterials.classList.add('active-mobile');
+        paneTutor.classList.remove('active-mobile');
+        btnMaterials.classList.add('active');
+        btnTutor.classList.remove('active');
+      } else {
+        paneTutor.classList.add('active-mobile');
+        paneMaterials.classList.remove('active-mobile');
+        btnTutor.classList.add('active');
+        btnMaterials.classList.remove('active');
+      }
+    }
+
+    // --- 7. CHAT ENGINE INTERACTION (SOCRATIC TUTOR) ---
+    async function handleChatSubmit(event) {
+      event.preventDefault();
+      const inputEl = document.getElementById('user-input');
+      const chatHistory = document.getElementById('chat-history');
+      const query = inputEl.value.trim();
+
+      if (!query) return;
+
+      // Append User Bubble
+      const userBubble = document.createElement('div');
+      userBubble.className = 'msg user';
+      userBubble.textContent = query;
+      chatHistory.appendChild(userBubble);
+
+      inputEl.value = '';
+      chatHistory.scrollTop = chatHistory.scrollHeight;
+
+      // Append Bot Thinking Indicator
+      const botBubble = document.createElement('div');
+      botBubble.className = 'msg bot';
+      botBubble.innerHTML = '<strong>Ọ̀yẹ́:</strong> <em>Unpacking Socratic question...</em>';
+      chatHistory.appendChild(botBubble);
+      chatHistory.scrollTop = chatHistory.scrollHeight;
+
+      try {
+        const response = await fetch('/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: query })
+        });
+
+        if (!response.ok) throw new Error('API unreachable');
+
+        const data = await response.json();
+        botBubble.innerHTML = `<strong>Ọ̀yẹ́:</strong> ${data.reply}`;
+      } catch (err) {
+        botBubble.innerHTML = `<strong>Ọ̀yẹ́:</strong> Ẹ ńlẹ́ o! Local node backend is offline. Please check your Termux instance running <code>oye_engine.py</code>.`;
+      }
+
+      chatHistory.scrollTop = chatHistory.scrollHeight;
+    }
+  </script>
 </body>
 </html>
-
-            
