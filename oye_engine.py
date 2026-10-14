@@ -1,74 +1,67 @@
-
-import http.server
-import socketserver
-import json
 import os
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from google import genai
+from google.genai import types
 
-PORT = 8080
+# Initialize FastAPI app
+app = FastAPI(title="Project Ìmọ̀ Socratic Engine")
 
-# Socratic Knowledge Base mapped to specific topics
-SOCRATIC_KNOWLEDGE_BASE = {
-    "ohm": {
-        "concept": "Ohm's Law (V = IR)",
-        "prompt": "Ohm's Law connects Voltage (V), Current (I), and Resistance (R). If you keep voltage constant but double the resistance, what happens to the electric current?"
-    },
-    "photosynthesis": {
-        "concept": "Photosynthesis",
-        "prompt": "Photosynthesis is how green plants produce glucose. What gas do plants take in from the air to make this happen, and what gas do they release for us to breathe?"
-    },
-    "velocity": {
-        "concept": "Velocity & Motion",
-        "prompt": "Velocity is speed with direction. If a car moves around a circular track at a steady 50 km/h, why is its velocity still changing?"
-    },
-    "pythagoras": {
-        "concept": "Pythagoras Theorem (a² + b² = c²)",
-        "prompt": "In a right-angled triangle with sides 3 and 4, how would you set up the equation to find the hypotenuse (longest side)?"
-    }
-}
+# Enable CORS so your browser frontend can talk to this backend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-DEFAULT_PROMPT = "That is a great question! Before we break it down together, what do you already know about this concept or topic?"
+# Initialize Google GenAI Client (pulls GEMINI_API_KEY from environment variables)
+# Make sure to set your API key in the Codespace secrets or terminal environment
+client = genai.Client()
 
-def generate_socratic_response(user_query):
-    query_lower = user_query.lower()
-   
-    # Check for topic keywords
-    for key, data in SOCRATIC_KNOWLEDGE_BASE.items():
-        if key in query_lower:
-            return f"<strong>[{data['concept']}]</strong><br>{data['prompt']}"
-           
-    # Universal fallback for unindexed topics
-    return DEFAULT_PROMPT
+# Request body model from the frontend UI
+class QueryRequest(BaseModel):
+    message: str
+    track: str = "WAEC"
+    subject: str = "Physics"
 
-class ImoRequestHandler(http.server.SimpleHTTPRequestHandler):
-    def do_POST(self):
-        if self.path == '/chat':
-            content_length = int(self.headers['Content-Length'])
-            post_data = self.rfile.read(content_length)
-           
-            try:
-                data = json.loads(post_data.decode('utf-8'))
-                user_msg = data.get('message', '')
-               
-                bot_reply = generate_socratic_response(user_msg)
-               
-                self.send_response(200)
-                self.send_header('Content-type', 'application/json')
-                self.end_headers()
-               
-                response_payload = json.dumps({'reply': bot_reply})
-                self.wfile.write(response_payload.encode('utf-8'))
-            except Exception as e:
-                self.send_response(400)
-                self.end_headers()
-        else:
-            self.send_error(404, "Endpoint not found")
+# Socratic System Prompt enforcing guidelines
+SOCRATIC_SYSTEM_PROMPT = """
+You are Ọ̀yẹ́, a warm, friendly, and expert Socratic study partner designed for West African secondary school students preparing for WAEC, JAMB, NECO, and BECE.
+Your core rules:
+1. NEVER give direct answers or solve equations completely for the student.
+2. Guide them step-by-step by asking thoughtful, probing questions that help them discover the answer themselves.
+3. Keep responses concise, engaging, and supportive (under 100 words where possible).
+4. Adapt your tone to be encouraging, like a brilliant older peer wearing a cozy hoodie and oversized glasses.
+"""
 
-if __name__ == '__main__':
-    os.chdir(os.path.dirname(os.path.abspath(__file__)))
-    with socketserver.TCPServer(("", PORT), ImoRequestHandler) as httpd:
-        print(f"🧠 Project Ìmọ̀ Node Server Running on Port {PORT}")
-        try:
-            httpd.serve_forever()
-        except KeyboardInterrupt:
-            print("\nShutting down server...")
-            httpd.server_close()
+@app.post("/chat")
+async def chat_endpoint(request: QueryRequest):
+    try:
+        # Construct prompt combining student track, subject, and message
+        full_prompt = (
+            f"Exam Track: {request.track}\n"
+            f"Subject: {request.subject}\n"
+            f"Student Message: {request.message}"
+        )
+
+        # Call Gemini API using the official google-genai SDK
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=full_prompt,
+            config=types.GenerateContentConfig(
+                system_instruction=SOCRATIC_SYSTEM_PROMPT,
+                temperature=0.7,
+            ),
+        )
+
+        return {"reply": response.text}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/")
+def home():
+    return {"status": "Project Ìmọ̀ Cloud Engine is running smoothly!"}
